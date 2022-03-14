@@ -1,7 +1,7 @@
 namespace csi5112group1project_service.MockData;
 using csi5112group1project_service.Models;
 
-public class MProducts
+public class MProduct
 {
   private static readonly string MockDescription =
     "BEST SHOES EVER.\n A shoe is an item of footwear intended to protect and comfort the human foot. Shoes are also used as an item of decoration and fashion. ... Traditionally, shoes have been made from leather, wood or canvas, but are increasingly being made from rubber, plastics, and other petrochemical-derived materials.";

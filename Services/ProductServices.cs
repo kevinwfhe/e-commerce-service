@@ -6,26 +6,27 @@ public class ProductService
   public ProductService() { }
   public async Task<string> CreateAsync(Product newProduct)
   {
-    MProducts.MockProducts.Add(newProduct);
+    MProduct.MockProducts.Add(newProduct);
     return newProduct.id;
   }
   public async Task<List<Product>> GetAsync()
   {
-    return MProducts.MockProducts;
+    Console.WriteLine(MProduct.MockProducts);
+    return MProduct.MockProducts;
   }
 
   public async Task<Product> GetByIdAsync(string id)
   {
-    return MProducts.MockProducts.Find(p => p.id == id);
+    return MProduct.MockProducts.Find(p => p.id == id);
   }
 
   public async Task<bool> UpdateByIdAsync(string id, Product updatedProduct)
   {
     bool result = false;
-    int index = MProducts.MockProducts.FindIndex(p => p.id == id);
+    int index = MProduct.MockProducts.FindIndex(p => p.id == id);
     if (index != -1)
     {
-      MProducts.MockProducts[index] = updatedProduct;
+      MProduct.MockProducts[index] = updatedProduct;
       result = true;
     }
     return result;
@@ -34,10 +35,10 @@ public class ProductService
   public async Task<bool> DeleteByIdAsync(string id)
   {
     bool result = false;
-    int index = MProducts.MockProducts.FindIndex(p => p.id == id);
+    int index = MProduct.MockProducts.FindIndex(p => p.id == id);
     if (index != -1)
     {
-      MProducts.MockProducts.RemoveAt(index);
+      MProduct.MockProducts.RemoveAt(index);
       result = true;
     }
     return result;
