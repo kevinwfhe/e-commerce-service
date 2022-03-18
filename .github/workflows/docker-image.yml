@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Login Dockerhub
+      uses: docker/login-action@v1
+      with:
+        username: kevinwfhe
+        password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+        
+    - name: Build and push image
+      uses: docker/build-push-action@v2.10.0
+      with:
+        context: ${{ env.GITHUB_WORKSPACE }}
+        file: ${{ env.GITHUB_WORKSPACE }}/Dockerfile
+        tags: kevinwfhe/csi5112project_service:latest
+        push: true
