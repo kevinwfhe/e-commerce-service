@@ -4,10 +4,12 @@ using csi5112group1project_service.Models;
 public class ShippingAddressService
 {
   public ShippingAddressService() { }
-  public async Task<string> CreateAsync(ShippingAddress newAddress)
+  public async Task<ShippingAddress> CreateAsync(ShippingAddress newAddress)
   {
+    Guid _id = Guid.NewGuid();
+    newAddress.id = _id.ToString();
     MShippingAddress.MockShippingAddresses.Add(newAddress);
-    return newAddress.id;
+    return newAddress;
   }
   public async Task<List<ShippingAddress>> GetAsync()
   {

@@ -36,12 +36,12 @@ public class ShippingAddressController : ControllerBase
   [HttpPost]
   public async Task<ActionResult> Post([FromBody] ShippingAddress newAddress)
   {
-    await _shippingAddressService.CreateAsync(newAddress);
-    return CreatedAtAction(nameof(Get), new { id = newAddress.id }, newAddress);
+    ShippingAddress addressCreated = await _shippingAddressService.CreateAsync(newAddress);
+    return CreatedAtAction(nameof(Get), addressCreated);
   }
 
   [HttpPut("{id}")]
-  public async Task<ActionResult> Update(string id, ShippingAddress updatedAddress)
+  public async Task<ActionResult> Update(string id, [FromBody] ShippingAddress updatedAddress)
   {
     var addressToUpdate = await _shippingAddressService.GetByIdAsync(id);
     if (addressToUpdate is null)
