@@ -22,15 +22,15 @@ public class OrderController : ControllerBase
   }
 
   [HttpGet("{id}", Name = "GetOrderById")]
-  public async Task<ActionResult<Order>> GetById(string id)
+  public async Task<ActionResult<DetailedOrder>> GetById(string id)
   {
-    var order = await _orderService.GetByIdAsync(id);
-    if (order is null)
+    var detaileOrder = await _orderService.GetByIdAsync(id);
+    if (detaileOrder is null)
     {
       _logger.LogWarning("Order {id} could not be found.", id);
       return NotFound();
     }
-    return order;
+    return detaileOrder;
   }
 
   [HttpPost]

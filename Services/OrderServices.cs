@@ -14,9 +14,34 @@ public class OrderService
     return MOrder.MockOrders;
   }
 
-  public async Task<Order> GetByIdAsync(string id)
+  // When get an order by its id, details of the order should be retured in human-readable way
+  // i.e. Detailed shipping address instead of shippingAddressId
+  // i.e. Detailed products instead of productIds
+  public async Task<DetailedOrder> GetByIdAsync(string id)
   {
-    return MOrder.MockOrders.Find(a => a.id == id);
+    ShippingAddressService _addressService = new ShippingAddressService();
+    ProductService _productService = new ProductService();
+
+    // Get order by id
+    var order = MOrder.MockOrders.Find(a => a.id == id);
+    // Get shipping address of this order by its shippingAddressId
+    var shippingAddress = await _addressService.GetByIdAsync(order.shippingAddressId);
+    // Get all the purchased products of this order by the productId of its putchasedItems
+    var purchasedProducts = await Task.WhenAll(
+       order.purchasedItems
+       .Select(item => _productService
+         .GetByIdAsync(item.productId)
+         .ContinueWith(product => new PurchasedProduct(product.Result, item.quantity)))
+       );
+    // assemble the DetailedOrder with all the components
+    return new DetailedOrder(
+      id: order.id,
+      createTime: order.createTime,
+      status: order.status,
+      totalPrice: order.totalPrice,
+      shippingAddress: shippingAddress,
+      purchasedProducts: purchasedProducts.ToList()
+    );
   }
 
   public async Task<bool> UpdateByIdAsync(string id, Order updateOrder)
