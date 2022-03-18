@@ -4,10 +4,15 @@ using csi5112group1project_service.Models;
 public class OrderService
 {
   public OrderService() { }
-  public async Task<string> CreateAsync(Order newOrder)
+  public async Task<Order> CreateAsync(Order newOrder)
   {
+    var _id = Guid.NewGuid();
+    newOrder.id = _id.ToString();
+    var _purchasedItems = newOrder.purchasedItems;
+    // generate unique id for each purchasedItem record
+    _purchasedItems.ForEach((pi) => pi.id = Guid.NewGuid().ToString());
     MOrder.MockOrders.Add(newOrder);
-    return newOrder.id;
+    return newOrder;
   }
   public async Task<List<Order>> GetAsync()
   {
@@ -31,7 +36,7 @@ public class OrderService
        order.purchasedItems
        .Select(item => _productService
          .GetByIdAsync(item.productId)
-         .ContinueWith(product => new PurchasedProduct(product.Result, item.quantity)))
+         .ContinueWith(product => new PurchasedProduct(item.id, product.Result, item.quantity)))
        );
     // assemble the DetailedOrder with all the components
     return new DetailedOrder(

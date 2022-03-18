@@ -58,14 +58,17 @@ public class Order
 // to a specific Product with quantity through the productId.
 public class PurchasedProduct
 {
+  public String purchasedItemId { get; set; }
   public Product product { get; set; }
   public int quantity { get; set; }
 
   public PurchasedProduct(
+    String purchasedItemId,
     Product product,
     int quantity
   )
   {
+    this.purchasedItemId = purchasedItemId;
     this.product = product;
     this.quantity = quantity;
   }

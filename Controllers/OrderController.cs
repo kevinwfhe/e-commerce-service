@@ -36,8 +36,8 @@ public class OrderController : ControllerBase
   [HttpPost]
   public async Task<ActionResult> Post([FromBody] Order newOrder)
   {
-    await _orderService.CreateAsync(newOrder);
-    return CreatedAtAction(nameof(Get), new { id = newOrder.id }, newOrder);
+    Order orderCreated = await _orderService.CreateAsync(newOrder);
+    return CreatedAtAction(nameof(Get), orderCreated);
   }
 
   [HttpPut("{id}")]
