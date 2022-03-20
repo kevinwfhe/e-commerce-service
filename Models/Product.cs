@@ -9,13 +9,16 @@ public class Product
   public string description { get; set; }
   public string category { get; set; }
 
+  public double? size { get; set; }
+
   public Product(
     string id,
     string image,
     string title,
     double price,
     string description,
-    string category
+    string category,
+    double? size = null
   )
   {
     this.id = id;
@@ -24,5 +27,6 @@ public class Product
     this.price = price;
     this.description = description;
     this.category = category;
+    this.size = size;
   }
 }
