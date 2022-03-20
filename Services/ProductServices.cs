@@ -52,7 +52,6 @@ public class ProductService
       ? dataInCategory.FindAll(p => (p.title.Contains(keyword) || p.description.Contains(keyword)))
       : dataInCategory;
     List<Product> dataSorted;
-    Console.WriteLine(_sortIndex);
     if (_sortIndex == 0) // not support yet
     {
       dataSorted = _sortAsc == 1
@@ -73,7 +72,6 @@ public class ProductService
     }
     else if (_sortIndex == 3)
     {
-      Console.WriteLine(_sortIndex);
       dataSorted = _sortAsc == 1
         ? dataMatched.OrderBy(d => d.price).ToList()
         : dataMatched.OrderByDescending(d => d.price).ToList();
