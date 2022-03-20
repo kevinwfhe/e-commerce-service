@@ -16,8 +16,30 @@ public class ProductController : ControllerBase
   }
 
   [HttpGet(Name = "GetProducts")]
-  public async Task<List<Product>> Get()
+  public async Task<PageInfo<List<Product>>> Get([FromQuery] string? keyword, [FromQuery] string? offset, [FromQuery] string? pageSize, [FromQuery] string? sortIndex, [FromQuery] string? sortAsc, [FromQuery] string? category)
   {
+    // TODO: deprecate GetByKeywordAsync and use GetByPageAsync instead
+    if (offset == null && (keyword != null || category != null))
+    {
+      if (keyword != null && category == null)
+      {
+        return await _productService.GetByKeywordAsync(keyword);
+      }
+      if (category != null && keyword == null)
+      {
+        return await _productService.GetByCategoryAsync(category);
+      }
+      if (category != null && keyword != null)
+      {
+        // TODO: else return a conbine search of keyword and category
+        return await _productService.GetByCategoryAsync(category);
+      }
+    }
+    if (offset != null)
+    {
+      var res = await _productService.GetByPageAsync(offset, pageSize, sortIndex, sortAsc, keyword, category);
+      return res;
+    }
     return await _productService.GetAsync();
   }
 

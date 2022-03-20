@@ -6,19 +6,19 @@ public class MCategory
   public static readonly List<Category> MockCategory = new List<Category> {
     new Category(
       id: "1",
-      name: "Electronic"
-    ),
-    new Category(
-      id: "2",
       name: "Shoes"
     ),
     new Category(
+      id: "2",
+      name: "Clothes"
+    ),
+    new Category(
       id: "3",
-      name: "Toy"
+      name: "Electronics"
     ),
     new Category(
       id: "4",
-      name: "Clothes"
+      name: "Toys"
     ),
     new Category(
       id: "5",

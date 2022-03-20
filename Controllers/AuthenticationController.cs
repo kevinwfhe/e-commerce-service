@@ -15,10 +15,10 @@ public class AuthenticationController : ControllerBase
     _AuthenticationService = AuthenticationService;
   }
 
-  //https://localhost:7098/api/authentication/login/usernameOrEmail/Julina Ellum/password/Hlua5QW/role/admin
-  //https://localhost:7098/api/authentication/login/usernameOrEmail/ngillham3@webmd.com/password/v0yNRwqfbn/role/client
-  [HttpGet("login/usernameOrEmail/{usernameOrEmail}/password/{password}/role/{role}")]
-  public async Task<ActionResult<User>> GetAuthentication(string usernameOrEmail, string password, string role)
+  // admin login: /api/Authentication/admin/{usernameOrEmail}/{password}
+  // client login: /api/Authentication/client/{usernameOrEmail}/{password}
+  [HttpGet("{role}/{usernameOremail}/{password}", Name = "login")]
+  public async Task<ActionResult<User>> login(string usernameOrEmail, string password, string role)
   {
     var user = await _AuthenticationService.login(usernameOrEmail, password, role);
     if (user is null)
