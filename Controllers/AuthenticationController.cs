@@ -15,20 +15,22 @@ public class AuthenticationController : ControllerBase
     _AuthenticationService = AuthenticationService;
   }
 
-  [HttpGet("{usernameOremail}/{password}", Name = "login")]
-  public async Task<ActionResult<User>> login(string usernameOremail, string password, string role)
+  //https://localhost:7098/api/authentication/login/usernameOrEmail/Julina Ellum/password/Hlua5QW/role/admin
+  //https://localhost:7098/api/authentication/login/usernameOrEmail/ngillham3@webmd.com/password/v0yNRwqfbn/role/client
+  [HttpGet("login/usernameOrEmail/{usernameOrEmail}/password/{password}/role/{role}")]
+  public async Task<ActionResult<User>> GetAuthentication(string usernameOrEmail, string password, string role)
   {
-    var user = await _AuthenticationService.login(usernameOremail, password, role);
+    var user = await _AuthenticationService.login(usernameOrEmail, password, role);
     if (user is null)
     {
-      _logger.LogWarning("user {usernameOremail} does not exist.", usernameOremail);
+      _logger.LogWarning("user {usernameOrEmail} does not exist.", usernameOrEmail);
       return NotFound();
     }
     return user;
   }
   
   [HttpPost]
-  public async Task<ActionResult<Client>> clientSignUp([FromBody] Client newClient)
+  public async Task<ActionResult<Client>> postAuthentication([FromBody] Client newClient)
   {
     var client = await _AuthenticationService.clientSignUp(newClient.username, newClient.emailAddress, newClient.password);
     if (client is not null)
