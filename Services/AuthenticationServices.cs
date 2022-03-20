@@ -5,13 +5,13 @@ public class AuthenticationService
 {
   public AuthenticationService() { }
 
-  public async Task<User> login(string usernameOremail, string password, string role)
+  public async Task<User> login(string usernameOrEmail, string password, string role)
   {
     if (role == "admin") {
-      return MAdmin.MockAdmins.Find(savedUser => savedUser.username == usernameOremail && savedUser.password == password);
+      return MAdmin.MockAdmins.Find(savedUser => savedUser.username == usernameOrEmail && savedUser.password == password);
     } 
     else if (role == "client") {
-      return MClient.MockClients.Find(savedUser => savedUser.emailAddress == usernameOremail && savedUser.password == password);
+      return MClient.MockClients.Find(savedUser => savedUser.emailAddress == usernameOrEmail && savedUser.password == password);
     }
     return null;
   }

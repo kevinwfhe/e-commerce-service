@@ -10,6 +10,7 @@ public class ServicesAggregator {
     builder.Services.AddSingleton<OrderService>();
     builder.Services.AddSingleton<ShippingAddressService>();
     builder.Services.AddSingleton<CategoryService>();
+    builder.Services.AddSingleton<AuthenticationService>();
     return builder;
   }
 }
