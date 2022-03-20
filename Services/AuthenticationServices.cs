@@ -3,7 +3,10 @@ using csi5112group1project_service.MockData;
 using csi5112group1project_service.Models;
 public class AuthenticationService
 {
-  public AuthenticationService() { }
+  private readonly ILogger<AuthenticationService> _logger;
+  public AuthenticationService(ILogger<AuthenticationService> logger) {
+    _logger = logger;
+   }
 
   public async Task<User> login(string usernameOrEmail, string password, string role)
   {
@@ -16,16 +19,14 @@ public class AuthenticationService
     return null;
   }
 
-  public async Task<Client> clientSignUp(string username, string emailAddress, string password) {
-    var savedClient = MClient.MockClients.Find(savedClient => savedClient.username == username && savedClient.emailAddress == emailAddress);
-    if (savedClient is null) {
+  public async Task<User> clientSignUp(User newClient) {
+    var client = MClient.MockClients.Find(savedClient => newClient.username == savedClient.username && newClient.emailAddress == savedClient.emailAddress);
+    _logger.LogWarning("[SAVED CLIENTS]", client.ToString());
+
+    if (client is null) {
       var _id = Guid.NewGuid().ToString();
-      return new Client(_id, username, password, emailAddress);
+      return new User(_id, newClient.username, newClient.password, newClient.emailAddress, "client");
     }
-    else {
-      return null;
-    }
+    return null;
   }
-
-
 }

@@ -23,22 +23,31 @@ public class AuthenticationController : ControllerBase
     var user = await _AuthenticationService.login(usernameOrEmail, password, role);
     if (user is null)
     {
-      _logger.LogWarning("user {usernameOrEmail} does not exist.", usernameOrEmail);
+      _logger.LogWarning("user {usernameOrEmail} does not exist or password is invalid.", usernameOrEmail);
       return NotFound();
     }
     return user;
   }
   
+//   [HttpPost]
+//   public async Task<ActionResult<User>> postAuthentication([FromBody] User newClient)
+//   {
+//     _logger.LogWarning("[NEWCLIENT OBJECT]", newClient);
+//     var client = await _AuthenticationService.clientSignUp(newClient);
+//     if (client is not null)
+//     {
+//       _logger.LogWarning("user {newClient.id} already exist.", newClient.id);
+//       return StatusCode(403);
+//     }
+//     return client;
+//   }
+
+  //https://localhost:7098/api/authentication/
   [HttpPost]
   public async Task<ActionResult<Client>> postAuthentication([FromBody] Client newClient)
   {
-    var client = await _AuthenticationService.clientSignUp(newClient.username, newClient.emailAddress, newClient.password);
-    if (client is not null)
-    {
-      _logger.LogWarning("user {newClient.id} already exist.", newClient.id);
-      return NotFound();
-    }
-    return client;
+    return newClient;
+
   }
  
 }
