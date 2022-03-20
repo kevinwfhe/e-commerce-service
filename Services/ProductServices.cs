@@ -4,14 +4,15 @@ using csi5112group1project_service.Models;
 public class ProductService
 {
   public ProductService() { }
-  public async Task<string> CreateAsync(Product newProduct)
+  public async Task<Product> CreateAsync(Product newProduct)
   {
+    var _id = Guid.NewGuid().ToString();
+    newProduct.id = _id;
     MProduct.MockProducts.Add(newProduct);
-    return newProduct.id;
+    return newProduct;
   }
   public async Task<List<Product>> GetAsync()
   {
-    Console.WriteLine(MProduct.MockProducts);
     return MProduct.MockProducts;
   }
 

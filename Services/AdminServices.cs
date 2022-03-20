@@ -11,7 +11,6 @@ public class AdminService
   }
   public async Task<List<Admin>> GetAsync()
   {
-    Console.WriteLine(MAdmin.MockAdmins);
     return MAdmin.MockAdmins;
   }
 
