@@ -16,9 +16,15 @@ public class OrderController : ControllerBase
   }
 
   [HttpGet(Name = "GetOrders")]
-  public async Task<List<Order>> Get()
+  public async Task<PageInfo<List<Order>>> Get([FromQuery] string? keyword, [FromQuery] string? offset, [FromQuery] string? pageSize, [FromQuery] string? sortIndex, [FromQuery] string? sortAsc)
   {
-    return await _orderService.GetAsync();
+    List<Order> orders;
+    orders = keyword != null
+      ? await _orderService.GetByKeywordAsync(keyword)
+      : await _orderService.GetAsync();
+    orders = _orderService.SortOrders(orders, sortIndex, sortAsc);
+    var pagedOrders = _orderService.PaginateOrders(orders, offset, pageSize);
+    return pagedOrders;
   }
 
   [HttpGet("{id}", Name = "GetOrderById")]

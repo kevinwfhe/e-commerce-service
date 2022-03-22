@@ -19,6 +19,58 @@ public class OrderService
     return MOrder.MockOrders;
   }
 
+  public async Task<List<Order>> GetByKeywordAsync(string keyword)
+  {
+    // keyword only supports orderId for now
+    return MOrder.MockOrders.FindAll((o) => o.id.Contains(keyword));
+  }
+
+  public List<Order> SortOrders(List<Order> orders, string sortIndex, string sortAsc)
+  {
+    if (orders.Count == 0 || sortIndex == null) return orders;
+    var _sortIndex = int.Parse(sortIndex);
+    var _sortAsc = int.Parse(sortAsc);
+    List<Order> dataSorted;
+    if (_sortIndex == 1) // sort by order status
+    {
+      dataSorted = _sortAsc == 1
+        ? orders.OrderBy(d => d.status).ToList()
+        : orders.OrderByDescending(d => d.status).ToList();
+    }
+    else if (_sortIndex == 2) // sort by order create time
+    {
+      dataSorted = _sortAsc == 1
+        ? orders.OrderBy(d => d.createTime).ToList()
+        : orders.OrderByDescending(d => d.createTime).ToList();
+    }
+    else if (_sortIndex == 3) // sort by total price
+    {
+      dataSorted = _sortAsc == 1
+        ? orders.OrderBy(d => d.totalPrice).ToList()
+        : orders.OrderByDescending(d => d.totalPrice).ToList();
+    }
+    else
+    {
+      dataSorted = orders;
+    }
+    return dataSorted;
+  }
+
+  public PageInfo<List<Order>> PaginateOrders(List<Order> orders, string offset, string pageSize)
+  {
+    if (offset == null || pageSize == null)
+    {
+      return new PageInfo<List<Order>>(rows: orders, totalRows: orders.Count);
+    }
+    var _offset = int.Parse(offset);
+    var _pageSize = int.Parse(pageSize);
+    int totalRows = orders.Count;
+    var dataInRange = _offset + _pageSize > totalRows
+      ? orders.GetRange(_offset, totalRows - _offset)
+      : orders.GetRange(_offset, _pageSize);
+    return new PageInfo<List<Order>>(rows: dataInRange, totalRows: totalRows);
+  }
+
   // When get an order by its id, details of the order should be retured in human-readable way
   // i.e. Detailed shipping address instead of shippingAddressId
   // i.e. Detailed products instead of productIds
