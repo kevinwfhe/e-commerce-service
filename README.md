@@ -7,7 +7,6 @@
 |-------    |----------|------
 |Jinrong Guo|8809970|g1024893531@gmail.com
 |Manlin Guo |6602848|mguo053@uottawa.ca
-|Yaqing Zhu |101133219|yaqingzhu@cmail.carleton.ca
 |Wenfeng He |300258355|whe060@uottawa.ca|
 |Feier Zhang|8589976|fzhan081@uottawa.ca
 
