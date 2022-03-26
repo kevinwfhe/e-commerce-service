@@ -8,15 +8,17 @@ public class AuthenticationService
     _logger = logger;
    }
 
-  public async Task<User> login(string usernameOrEmail, string password, string role)
+  public async Task<User> login(AuthenticationBody body, string role)
   {
+    string _usernameOrEmail = body.username;
+    string _password = body.password;
     if (role == "admin")
     {
-      return MAdmin.MockAdmins.Find(savedUser => (savedUser.username == usernameOrEmail) || (savedUser.emailAddress == usernameOrEmail) && savedUser.password == password);
+      return MAdmin.MockAdmins.Find(savedUser => (savedUser.username == _usernameOrEmail) || (savedUser.emailAddress == _usernameOrEmail) && savedUser.password == _password);
     }
     else if (role == "client")
     {
-      return MClient.MockClients.Find(savedUser => (savedUser.username == usernameOrEmail) || (savedUser.emailAddress == usernameOrEmail) && savedUser.password == password);
+      return MClient.MockClients.Find(savedUser => (savedUser.username == _usernameOrEmail) || (savedUser.emailAddress == _usernameOrEmail) && savedUser.password == _password);
     }
     return null;
   }

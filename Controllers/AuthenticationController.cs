@@ -17,13 +17,13 @@ public class AuthenticationController : ControllerBase
 
   // admin login: /api/Authentication/admin/{usernameOrEmail}/{password}
   // client login: /api/Authentication/client/{usernameOrEmail}/{password}
-  [HttpGet("{role}/{usernameOremail}/{password}", Name = "login")]
-  public async Task<ActionResult<User>> login(string usernameOrEmail, string password, string role)
+  [HttpPost("{role}", Name = "login")]
+  public async Task<ActionResult<User>> login([FromBody] AuthenticationBody body, string role)
   {
-    var user = await _AuthenticationService.login(usernameOrEmail, password, role);
+    var user = await _AuthenticationService.login(body, role);
     if (user is null)
     {
-      _logger.LogWarning("user {usernameOrEmail} does not exist or password is invalid.", usernameOrEmail);
+      _logger.LogWarning("user {username} does not exist or password is invalid.", body.username);
       return NotFound();
     }
     return user;
