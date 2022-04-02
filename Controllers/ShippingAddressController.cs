@@ -2,7 +2,8 @@ namespace csi5112group1project_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using csi5112group1project_service.Models;
 using csi5112group1project_service.Services;
-
+using csi5112group1project_service.Utils;
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ShippingAddressController : ControllerBase
@@ -18,6 +19,7 @@ public class ShippingAddressController : ControllerBase
   [HttpGet(Name = "GetShippingAddresses")]
   public async Task<List<ShippingAddress>> Get()
   {
+    // User currentUser = (User)HttpContext.Items["User"];
     return await _shippingAddressService.GetAsync();
   }
 

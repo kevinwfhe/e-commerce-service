@@ -1,4 +1,6 @@
 namespace csi5112group1project_service.Models;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 public enum OrderStatus
 {
@@ -11,17 +13,16 @@ public enum OrderStatus
 
 public class PurchasedItem
 {
-  public string id { get; set; } // unique id of a purchased item itself
+
+  [BsonRepresentation(BsonType.ObjectId)]
   public string productId { get; set; } // id of the product which the purchased item refers to
   public int quantity { get; set; }
 
   public PurchasedItem(
-    string id,
     string productId,
     int quantity
   )
   {
-    this.id = id;
     this.productId = productId;
     this.quantity = quantity;
   }
@@ -29,12 +30,20 @@ public class PurchasedItem
 
 public class Order
 {
+
+  [BsonId]
+  [BsonRepresentation(BsonType.ObjectId)]
   public string id { get; set; } // unique id of the order itself
   public long createTime { get; set; } // Unix timestamp
   public OrderStatus status { get; set; }
   public double totalPrice { get; set; }
+
+  [BsonRepresentation(BsonType.ObjectId)]
   public string shippingAddressId { get; set; } // id of the shipping address of the order
   public List<PurchasedItem> purchasedItems { get; set; }
+
+  [BsonRepresentation(BsonType.ObjectId)]
+  public string userId { get; set; }
 
   public Order(
     string id,
@@ -42,7 +51,8 @@ public class Order
     OrderStatus status,
     double totalPrice,
     string shippingAddressId,
-    List<PurchasedItem> purchasedItems
+    List<PurchasedItem> purchasedItems,
+    string userId
   )
   {
     this.id = id;
@@ -51,6 +61,7 @@ public class Order
     this.totalPrice = totalPrice;
     this.shippingAddressId = shippingAddressId;
     this.purchasedItems = purchasedItems;
+    this.userId = userId;
   }
 
 }
@@ -58,17 +69,14 @@ public class Order
 // to a specific Product with quantity through the productId.
 public class PurchasedProduct
 {
-  public String purchasedItemId { get; set; }
   public Product product { get; set; }
   public int quantity { get; set; }
 
   public PurchasedProduct(
-    String purchasedItemId,
     Product product,
     int quantity
   )
   {
-    this.purchasedItemId = purchasedItemId;
     this.product = product;
     this.quantity = quantity;
   }

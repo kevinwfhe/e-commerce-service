@@ -2,6 +2,7 @@ namespace csi5112group1project_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using csi5112group1project_service.Models;
 using csi5112group1project_service.Services;
+using csi5112group1project_service.Utils;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -34,6 +35,7 @@ public class CategoryController : ControllerBase
   }
 
   [HttpPost]
+  [AdminAuthorize]
   public async Task<ActionResult> Post([FromBody] Category newCategory)
   {
     Category categoryCreated = await _categoryService.CreateAsync(newCategory);
@@ -41,7 +43,8 @@ public class CategoryController : ControllerBase
   }
 
   [HttpPut("{id}")]
-  public async Task<ActionResult> Update(string id, Category updatedCategory)
+  [AdminAuthorize]
+  public async Task<ActionResult> Update(string id, [FromBody] Category updatedCategory)
   {
     var categoryToUpdate = await _categoryService.GetByIdAsync(id);
     if (categoryToUpdate is null)
@@ -55,6 +58,7 @@ public class CategoryController : ControllerBase
   }
 
   [HttpDelete("{id}")]
+  [AdminAuthorize]
   public async Task<ActionResult> Delete(string id)
   {
     var categoryToDelete = await _categoryService.GetByIdAsync(id);

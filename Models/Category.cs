@@ -1,9 +1,12 @@
 namespace csi5112group1project_service.Models;
-
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 public class Category
 {
-  public String id { get; set; }
-  public String name { get; set; }
+  [BsonId]
+  [BsonRepresentation(BsonType.ObjectId)]
+  public string id { get; set; }
+  public string name { get; set; }
 
   public Category(
     string id,

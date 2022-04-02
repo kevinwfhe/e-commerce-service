@@ -1,34 +1,50 @@
 namespace csi5112group1project_service.Services;
-using csi5112group1project_service.MockData;
 using csi5112group1project_service.Models;
+using csi5112group1project_service.Utils;
+
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 public class CategoryService
 {
-  public CategoryService() { }
+  private readonly IMongoCollection<Category> _categories;
+  private readonly IMongoCollection<Category> _deletedCategories;
+  public CategoryService(IOptions<DatabaseSettings> databaseSettings)
+  {
+    var settings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+    var client = new MongoClient(settings);
+    var database = client.GetDatabase(databaseSettings.Value.DatabaseName);
+    _categories = database.GetCollection<Category>(databaseSettings.Value.CategoryCollectionName);
+    _deletedCategories = database.GetCollection<Category>(databaseSettings.Value.DeletedCategoryCollectionName);
+  }
   public async Task<Category> CreateAsync(Category newCategory)
   {
-    var _id = Guid.NewGuid().ToString();
-    newCategory.id = _id;
-    MCategory.MockCategory.Add(newCategory);
+    await _categories.InsertOneAsync(newCategory);
     return newCategory;
   }
   public async Task<List<Category>> GetAsync()
   {
-    return MCategory.MockCategory;
+    return await _categories.Find(_ => true).ToListAsync();
   }
 
   public async Task<Category> GetByIdAsync(string id)
   {
-    return MCategory.MockCategory.Find(c => c.id == id);
+    return await _categories.Find(c => c.id == id).FirstOrDefaultAsync();
+  }
+
+  public async Task<Category> GetByIdFromDeletedAsync(string id)
+  {
+    return await _deletedCategories.Find(c => c.id == id).FirstOrDefaultAsync();
   }
 
   public async Task<bool> UpdateByIdAsync(string id, Category updatedCategory)
   {
     bool result = false;
-    int index = MCategory.MockCategory.FindIndex(c => c.id == id);
-    if (index != -1)
+    var category = await _categories.Find(c => c.id == id).FirstOrDefaultAsync();
+    if (category != null)
     {
-      MCategory.MockCategory[index] = updatedCategory;
-      result = true;
+      var res = _categories.ReplaceOne(c => c.id == id, updatedCategory);
+      result = res.IsAcknowledged;
     }
     return result;
   }
@@ -36,11 +52,13 @@ public class CategoryService
   public async Task<bool> DeleteByIdAsync(string id)
   {
     bool result = false;
-    int index = MCategory.MockCategory.FindIndex(c => c.id == id);
-    if (index != -1)
+    var category = await _categories.Find(c => c.id == id).FirstOrDefaultAsync();
+    if (category != null)
     {
-      MCategory.MockCategory.RemoveAt(index);
-      result = true;
+      // soft delete
+      _deletedCategories.InsertOne(category);
+      var res = _categories.DeleteOne(c => c.id == id);
+      result = res.IsAcknowledged;
     }
     return result;
   }

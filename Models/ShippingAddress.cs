@@ -1,7 +1,11 @@
 namespace csi5112group1project_service.Models;
-
+using System.Text.Json.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 public class ShippingAddress
 {
+  [BsonId]
+  [BsonRepresentation(BsonType.ObjectId)]
   public string id { get; set; }
   public string fullname { get; set; }
   public string phoneNumber { get; set; }
@@ -11,6 +15,9 @@ public class ShippingAddress
   public string province { get; set; }
   public string postalCode { get; set; }
 
+  [BsonRepresentation(BsonType.ObjectId)]
+  public string userId { get; set; }
+
   public ShippingAddress(
     string id,
     string fullname,
@@ -19,7 +26,8 @@ public class ShippingAddress
     string addressSecondLine,
     string city,
     string province,
-    string postalCode
+    string postalCode,
+    string userId
   )
   {
     this.id = id;
@@ -30,5 +38,6 @@ public class ShippingAddress
     this.city = city;
     this.province = province;
     this.postalCode = postalCode;
+    this.userId = userId;
   }
 }

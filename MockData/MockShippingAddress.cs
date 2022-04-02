@@ -12,7 +12,8 @@ public class MShippingAddress
       addressSecondLine: "805 Laurel Alley",
       city: "Xinbao",
       province: "Balakhninskiy",
-      postalCode: "Q43 H63"
+      postalCode: "Q43 H63",
+      userId: "43d4e025-579b-44c6-a1ba-58b7dde1b5cf"
     ),
     new ShippingAddress(
       id: "99a8af71-1a53-41e1-987e-8c899e8d833f",
@@ -22,7 +23,8 @@ public class MShippingAddress
       addressSecondLine: "006 Graceland Lane",
       city: "Landerneau",
       province: "Stockholm",
-      postalCode: "K93 G43"
+      postalCode: "K93 G43",
+      userId: "bb9d79e5-9070-44f3-bbbb-740404f6f4dd"
     ),
     new ShippingAddress(
       id: "6b034dbd-a299-4fef-9072-31cc21f144db",
@@ -32,7 +34,8 @@ public class MShippingAddress
       addressSecondLine: "5 Shasta Court",
       city: "Onueke",
       province: "Bang Mun Nak",
-      postalCode: "O83 Z53"
+      postalCode: "O83 Z53",
+      userId: "de712f75-599f-4064-bda0-ef24ff979af8"
     ),
     new ShippingAddress(
       id: "348d51c5-7ec9-4fef-aa13-1dc5b7818572",
@@ -42,7 +45,8 @@ public class MShippingAddress
       addressSecondLine: "39 Jay Crossing",
       city: "Limoges",
       province: "Yamoussoukro",
-      postalCode: "T13 D23"
+      postalCode: "T13 D23",
+      userId: "8d5a8401-9755-42b2-ba13-2db5d006c98a"
     ),
     new ShippingAddress(
       id: "2e52be1c-7e1e-48d2-bfa2-053db70d9248",
@@ -52,7 +56,8 @@ public class MShippingAddress
       addressSecondLine: "3 Carey Plaza",
       city: "Hexia",
       province: "Amiens",
-      postalCode: "P53 Z73"
+      postalCode: "P53 Z73",
+      userId: "ac49bcaf-c4ec-4b3d-a927-3e1b23896c90"
     )
   };
 }

@@ -2,17 +2,19 @@ namespace csi5112group1project_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using csi5112group1project_service.Models;
 using csi5112group1project_service.Services;
-
+using csi5112group1project_service.Utils;
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
 {
   private readonly ILogger<ProductController> _logger;
   private readonly ProductService _productService;
-  public ProductController(ILogger<ProductController> logger, ProductService productService)
+  private readonly JwtService _jwtService;
+  public ProductController(ILogger<ProductController> logger, ProductService productService, JwtService jwtService)
   {
     _logger = logger;
     _productService = productService;
+    _jwtService = jwtService;
   }
 
   [HttpGet(Name = "GetProducts")]
@@ -46,7 +48,7 @@ public class ProductController : ControllerBase
   [HttpGet("{id}", Name = "GetProductById")]
   public async Task<ActionResult<Product>> GetById(string id)
   {
-    var product = await _productService.GetByIdAsync(id);
+    var product = await _productService.GetById(id);
     if (product is null)
     {
       _logger.LogWarning("Product {id} could not be found.", id);
@@ -55,6 +57,7 @@ public class ProductController : ControllerBase
     return product;
   }
 
+  [AdminAuthorize]
   [HttpPost]
   public async Task<ActionResult> Post([FromBody] Product newProduct)
   {
@@ -62,10 +65,11 @@ public class ProductController : ControllerBase
     return CreatedAtAction(nameof(Get), productCreated);
   }
 
+  [AdminAuthorize]
   [HttpPut("{id}")]
-  public async Task<ActionResult> Update(string id, Product updatedProduct)
+  public async Task<ActionResult> Update(string id, [FromBody] Product updatedProduct)
   {
-    var productToUpdate = await _productService.GetByIdAsync(id);
+    var productToUpdate = await _productService.GetById(id);
     if (productToUpdate is null)
     {
       _logger.LogWarning("Product {id} could not be found.", id);
@@ -76,10 +80,11 @@ public class ProductController : ControllerBase
     return NoContent();
   }
 
+  [AdminAuthorize]
   [HttpDelete("{id}")]
   public async Task<ActionResult> Delete(string id)
   {
-    var productToDelete = await _productService.GetByIdAsync(id);
+    var productToDelete = await _productService.GetById(id);
     if (productToDelete is null)
     {
       _logger.LogWarning("Product {id} could not be found.", id);

@@ -1,10 +1,13 @@
 namespace csi5112group1project_service.Models;
+using System.Text.Json.Serialization;
+using MongoDB.Bson;
 
 public class Client : User
 {
-  public List<ShippingAddress> shippingAddresses { get; set; }
-  // public List<Order> orders { get; set; }
-  // public List<Product> wishList { get; set; }
+  [JsonIgnore]
+  public List<ObjectId> orders { get; set; }
+  [JsonIgnore]
+  public List<ObjectId> shippingAddresses { get; set; }
   public Client(
     string id,
     string username,
@@ -12,8 +15,7 @@ public class Client : User
     string emailAddress
   ) : base(id, username, password, emailAddress, role: "client")
   {
-    this.shippingAddresses = new List<ShippingAddress>();
-    // this.orders = new List<Order>();
-    // this.wishList = new List<Product>();
+    this.orders = new List<ObjectId>();
+    this.shippingAddresses = new List<ObjectId>();
   }
 }

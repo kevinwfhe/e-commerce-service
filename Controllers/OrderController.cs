@@ -2,7 +2,9 @@ namespace csi5112group1project_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using csi5112group1project_service.Models;
 using csi5112group1project_service.Services;
+using csi5112group1project_service.Utils;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class OrderController : ControllerBase
@@ -33,7 +35,10 @@ public class OrderController : ControllerBase
     var detaileOrder = await _orderService.GetByIdAsync(id);
     if (detaileOrder is null)
     {
-      _logger.LogWarning("Order {id} could not be found.", id);
+      // noted that when the query result is null, it is possible because of unauthorization
+      // in that case, we dont want the sender aware of the existence of this order,
+      // hence return 404 if the order is null
+      _logger.LogWarning("Order {id} could not be found, or the request sender has no access to it.", id);
       return NotFound();
     }
     return detaileOrder;
@@ -47,7 +52,7 @@ public class OrderController : ControllerBase
   }
 
   [HttpPut("{id}")]
-  public async Task<ActionResult> Update(string id, Order updatedOrder)
+  public async Task<ActionResult> Update(string id, [FromBody] Order updatedOrder)
   {
     var orderToUpdate = await _orderService.GetByIdAsync(id);
     if (orderToUpdate is null)
