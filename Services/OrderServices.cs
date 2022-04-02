@@ -15,9 +15,15 @@ public class OrderService
   private readonly ProductService _productsService;
   private readonly ShippingAddressService _shippingAddressService;
   private readonly IHttpContextAccessor _httpContextAccessor;
-  public OrderService(IOptions<DatabaseSettings> databaseSettings, IHttpContextAccessor httpContextAccessor, ShippingAddressService shippingAddressService, ProductService productService)
+  public OrderService(IOptions<DatabaseSettings> databaseSettings, IHttpContextAccessor httpContextAccessor, ShippingAddressService shippingAddressService, ProductService productService, IConfiguration configuration)
   {
-    var settings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+    var connectionString = configuration.GetValue<string>("CONNECTION_STRING");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+      // Development environment could use the connection string from the appsetting
+      connectionString = databaseSettings.Value.ConnectionString;
+    }
+    var settings = MongoClientSettings.FromConnectionString(connectionString);
     settings.ServerApi = new ServerApi(ServerApiVersion.V1);
     var client = new MongoClient(settings);
     var database = client.GetDatabase(databaseSettings.Value.DatabaseName);

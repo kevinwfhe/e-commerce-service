@@ -11,9 +11,15 @@ public class ShippingAddressService
   private readonly IMongoCollection<Client> _clients;
   private readonly IMongoCollection<ShippingAddress> _deletedShippingAddress;
   private readonly IHttpContextAccessor _httpContextAccessor;
-  public ShippingAddressService(IOptions<DatabaseSettings> databaseSettings, IHttpContextAccessor httpContextAccessor)
+  public ShippingAddressService(IOptions<DatabaseSettings> databaseSettings, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
   {
-    var settings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+    var connectionString = configuration.GetValue<string>("CONNECTION_STRING");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+      // Development environment could use the connection string from the appsetting
+      connectionString = databaseSettings.Value.ConnectionString;
+    }
+    var settings = MongoClientSettings.FromConnectionString(connectionString);
     settings.ServerApi = new ServerApi(ServerApiVersion.V1);
     var client = new MongoClient(settings);
     var database = client.GetDatabase(databaseSettings.Value.DatabaseName);

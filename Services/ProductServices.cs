@@ -9,9 +9,15 @@ public class ProductService
   private readonly IMongoCollection<Product> _products;
   private readonly IMongoCollection<Product> _deletedProducts;
   private readonly AwsService _awsService;
-  public ProductService(IOptions<DatabaseSettings> databaseSettings, AwsService awsService)
+  public ProductService(IOptions<DatabaseSettings> databaseSettings, AwsService awsService, IConfiguration configuration)
   {
-    var settings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+    var connectionString = configuration.GetValue<string>("CONNECTION_STRING");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+      // Development environment could use the connection string from the appsetting
+      connectionString = databaseSettings.Value.ConnectionString;
+    }
+    var settings = MongoClientSettings.FromConnectionString(connectionString);
     settings.ServerApi = new ServerApi(ServerApiVersion.V1);
     var client = new MongoClient(settings);
     var database = client.GetDatabase(databaseSettings.Value.DatabaseName);

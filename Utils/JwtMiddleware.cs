@@ -9,14 +9,20 @@ using csi5112group1project_service.Services;
 public class JwtMiddleware
 {
   private readonly RequestDelegate _next;
-  private readonly AppSettings _appSettings;
+  private readonly string _jwtSecret;
   private readonly UserService _userService;
 
-  public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings, UserService userService)
+  public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings, UserService userService, IConfiguration configuration)
   {
     _next = next;
-    _appSettings = appSettings.Value;
     _userService = userService;
+    _jwtSecret = configuration.GetValue<string>("JWT_SECRET");
+    if (string.IsNullOrEmpty(_jwtSecret))
+    {
+      // Development environment could use the connection string from the appsetting
+      _jwtSecret = appSettings.Value.JwtSecret;
+    }
+
   }
 
   public async Task Invoke(HttpContext context)
@@ -29,12 +35,12 @@ public class JwtMiddleware
     await _next(context);
   }
 
-  private void attachUserToContext (HttpContext context, string token)
+  private void attachUserToContext(HttpContext context, string token)
   {
     try
     {
       var tokenHandler = new JwtSecurityTokenHandler();
-      var key = Encoding.ASCII.GetBytes(_appSettings.JwtSecret);
+      var key = Encoding.ASCII.GetBytes(_jwtSecret);
       tokenHandler.ValidateToken(token, new TokenValidationParameters
       {
         ValidateIssuerSigningKey = true,

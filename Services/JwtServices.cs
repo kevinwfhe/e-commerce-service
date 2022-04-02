@@ -9,20 +9,25 @@ using csi5112group1project_service.Utils;
 
 public class JwtService
 {
-  private readonly AppSettings _appSettings;
-  public JwtService(IOptions<AppSettings> appSettings)
+  private readonly string _jwtSecret;
+  public JwtService(IOptions<AppSettings> appSettings, IConfiguration configuration)
   {
-    _appSettings = appSettings.Value;
+    _jwtSecret = configuration.GetValue<string>("JWT_SECRET");
+    if (string.IsNullOrEmpty(_jwtSecret))
+    {
+      // Development environment could use the connection string from the appsetting
+      _jwtSecret = appSettings.Value.JwtSecret;
+    }
   }
 
   public string generateJwtToken(User user)
   {
     var tokenHandler = new JwtSecurityTokenHandler();
-    var key = Encoding.ASCII.GetBytes(_appSettings.JwtSecret);
+    var key = Encoding.ASCII.GetBytes(_jwtSecret);
     var tokenDescriptor = new SecurityTokenDescriptor
     {
       Subject = new ClaimsIdentity(new[] { new Claim("sub", user.id.ToString()) }),
-    // generate token that is valid for 2 hours
+      // generate token that is valid for 2 hours
       Expires = DateTime.UtcNow.AddHours(2),
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
     };

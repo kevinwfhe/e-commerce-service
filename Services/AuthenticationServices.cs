@@ -9,11 +9,17 @@ public class AuthenticationService
   private readonly ILogger<AuthenticationService> _logger;
   private readonly JwtService _JwtService;
   private readonly IMongoCollection<User> _users;
-  public AuthenticationService(ILogger<AuthenticationService> logger, JwtService JwtService, IOptions<DatabaseSettings> databaseSettings)
+  public AuthenticationService(ILogger<AuthenticationService> logger, JwtService JwtService, IOptions<DatabaseSettings> databaseSettings, IConfiguration configuration)
   {
     _logger = logger;
     _JwtService = JwtService;
-    var settings = MongoClientSettings.FromConnectionString(databaseSettings.Value.ConnectionString);
+    var connectionString = configuration.GetValue<string>("CONNECTION_STRING");
+    if (string.IsNullOrEmpty(connectionString))
+    {
+      // Development environment could use the connection string from the appsetting
+      connectionString = databaseSettings.Value.ConnectionString;
+    }
+    var settings = MongoClientSettings.FromConnectionString(connectionString);
     settings.ServerApi = new ServerApi(ServerApiVersion.V1);
     var client = new MongoClient(settings);
     var database = client.GetDatabase(databaseSettings.Value.DatabaseName);
