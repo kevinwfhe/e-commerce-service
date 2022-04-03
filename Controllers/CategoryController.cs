@@ -38,8 +38,15 @@ public class CategoryController : ControllerBase
   [AdminAuthorize]
   public async Task<ActionResult> Post([FromBody] Category newCategory)
   {
-    Category categoryCreated = await _categoryService.CreateAsync(newCategory);
-    return CreatedAtAction(nameof(Get), categoryCreated);
+    try
+    {
+      Category categoryCreated = await _categoryService.CreateAsync(newCategory);
+      return CreatedAtAction(nameof(Get), categoryCreated);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(error: ex.Message);
+    }
   }
 
   [HttpPut("{id}")]
@@ -53,8 +60,15 @@ public class CategoryController : ControllerBase
       return NotFound();
     }
     updatedCategory.id = categoryToUpdate.id;
-    await _categoryService.UpdateByIdAsync(id, updatedCategory);
-    return NoContent();
+    try
+    {
+      await _categoryService.UpdateByIdAsync(id, updatedCategory);
+      return NoContent();
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(error: ex.Message);
+    }
   }
 
   [HttpDelete("{id}")]

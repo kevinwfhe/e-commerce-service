@@ -25,6 +25,16 @@ public class UserService
 
   public async Task<User> CreateAsync(User newUser)
   {
+    bool usernameExist = _users.Find(u => u.username == newUser.username).Any();
+    bool emailExist = _users.Find(u => u.emailAddress == newUser.emailAddress).Any();
+    if(usernameExist)
+    {
+      throw new Exception("username exist");
+    }
+    if(emailExist)
+    {
+      throw new Exception("email exist");
+    }
     if (newUser.role == "admin")
     {
       var newAdmin = new Admin(id: "", newUser.username, newUser.password, newUser.emailAddress);

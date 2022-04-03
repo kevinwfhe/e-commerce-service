@@ -38,8 +38,15 @@ public class UserController : ControllerBase
       // Only client user can be registered
       return Unauthorized();
     }
-    var user = await _userService.CreateAsync(newUser);
-    return CreatedAtAction(nameof(Post), user);
+    try
+    {
+      var user = await _userService.CreateAsync(newUser);
+      return CreatedAtAction(nameof(Post), user);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(error: ex.Message);
+    }
   }
 
   [Authorize]

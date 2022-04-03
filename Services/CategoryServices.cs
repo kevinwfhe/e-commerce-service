@@ -25,6 +25,11 @@ public class CategoryService
   }
   public async Task<Category> CreateAsync(Category newCategory)
   {
+    bool nameExist = _categories.Find(c => c.name == newCategory.name).Any();
+    if (nameExist)
+    {
+      throw new Exception("category exist");
+    }
     await _categories.InsertOneAsync(newCategory);
     return newCategory;
   }
@@ -45,6 +50,11 @@ public class CategoryService
 
   public async Task<bool> UpdateByIdAsync(string id, Category updatedCategory)
   {
+    bool nameExist = _categories.Find(c => c.name == updatedCategory.name).Any();
+    if (nameExist)
+    {
+      throw new Exception("category exist");
+    }
     bool result = false;
     var category = await _categories.Find(c => c.id == id).FirstOrDefaultAsync();
     if (category != null)
