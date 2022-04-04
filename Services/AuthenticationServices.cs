@@ -30,8 +30,13 @@ public class AuthenticationService
   {
     string _usernameOrEmail = body.username;
     string _password = body.password;
-    var user = await _users.Find(u => u.username == _usernameOrEmail || u.emailAddress == _usernameOrEmail).FirstOrDefaultAsync();
+    var user = await _users.Find(u => (u.username == _usernameOrEmail || u.emailAddress == _usernameOrEmail) && u.password == _password).FirstOrDefaultAsync();
     return user;
+  }
+
+  public void SignOut()
+  {
+    _JwtService.invalidateToken();
   }
 
   public AuthenticationResponseBody SignToken(User user)

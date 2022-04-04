@@ -11,11 +11,13 @@ public class JwtMiddleware
   private readonly RequestDelegate _next;
   private readonly string _jwtSecret;
   private readonly UserService _userService;
+  private readonly JwtService _jwtService;
 
-  public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings, UserService userService, IConfiguration configuration)
+  public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings, UserService userService, JwtService jwtService, IConfiguration configuration)
   {
     _next = next;
     _userService = userService;
+    _jwtService = jwtService;
     _jwtSecret = configuration.GetValue<string>("JWT_SECRET");
     if (string.IsNullOrEmpty(_jwtSecret))
     {
@@ -37,6 +39,11 @@ public class JwtMiddleware
 
   private void attachUserToContext(HttpContext context, string token)
   {
+    if (_jwtService.tokenInBlacklist(token))
+    {
+      // no need to validate if the token in blacklist
+      return;
+    }
     try
     {
       var tokenHandler = new JwtSecurityTokenHandler();

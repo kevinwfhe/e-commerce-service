@@ -2,9 +2,10 @@ namespace csi5112group1project_service.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using csi5112group1project_service.Models;
 using csi5112group1project_service.Services;
+using csi5112group1project_service.Utils;
 
 [ApiController]
-[Route("api/login")]
+[Route("api/")]
 public class AuthenticationController : ControllerBase
 {
   private readonly ILogger<AuthenticationController> _logger;
@@ -15,7 +16,7 @@ public class AuthenticationController : ControllerBase
     _AuthenticationService = AuthenticationService;
   }
 
-  [HttpPost(Name = "login")]
+  [HttpPost("login", Name = "login")]
   public async Task<ActionResult<AuthenticationResponseBody>> Login([FromBody] AuthenticationRequestBody body)
   {
     var user = await _AuthenticationService.Login(body);
@@ -24,7 +25,15 @@ public class AuthenticationController : ControllerBase
       _logger.LogWarning("User {username} does not exist or password is invalid.", body.username);
       return NotFound();
     }
-    var response =  _AuthenticationService.SignToken(user);
+    var response = _AuthenticationService.SignToken(user);
     return response;
+  }
+
+  [Authorize]
+  [HttpGet("logout", Name = "Logout")]
+  public ActionResult Logout()
+  {
+    _AuthenticationService.SignOut();
+    return Ok();
   }
 }
