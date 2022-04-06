@@ -12,7 +12,7 @@ public class Product
   public string description { get; set; }
   
   [BsonRepresentation(BsonType.ObjectId)]
-  public string category { get; set; }
+  public string? category { get; set; }
 
   public double? size { get; set; }
 

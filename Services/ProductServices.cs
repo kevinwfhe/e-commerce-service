@@ -157,4 +157,16 @@ public class ProductService
     }
     return result;
   }
+
+  public async Task<bool> DeleteManyByIdAsync(List<string> ids)
+  {
+    bool result = false;
+    // soft delete
+    var inFilter = Builders<Product>.Filter.In(p => p.id, ids);
+    var productsToDelete = _products.Find(inFilter).ToList();
+    _deletedProducts.InsertMany(productsToDelete);
+    _products.DeleteMany(inFilter);
+    result = true;
+    return result;
+  }
 }

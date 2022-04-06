@@ -93,4 +93,12 @@ public class ProductController : ControllerBase
     await _productService.DeleteByIdAsync(id);
     return NoContent();
   }
+
+  [AdminAuthorize]
+  [HttpPost("BatchDelete")]
+  public async Task<ActionResult> BatchDelete([FromBody] List<string> ids)
+  {
+    await _productService.DeleteManyByIdAsync(ids);
+    return NoContent();
+  }
 }
