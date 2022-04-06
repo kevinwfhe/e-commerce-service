@@ -10,6 +10,9 @@ public class DatabaseSettings
   public string OrderCollectionName { get; set; } = null!;
   public string CategoryCollectionName { get; set; } = null!;
   public string ShippingAddressCollectionName { get; set; } = null!;
+  public string QuestionCollectionName { get; set; } = null!;
+  public string AnswerCollectionName { get; set; } = null!;
+  public string CommentCollectionName { get; set; } = null!;
 
   public string DeletedProductCollectionName { get; set; } = null!;
   public string DeletedCategoryCollectionName { get; set; } = null!;

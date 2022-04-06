@@ -14,7 +14,9 @@ public class ServicesAggregator
     builder.Services.AddSingleton<JwtService>();
     builder.Services.AddSingleton<UserService>();
     builder.Services.AddSingleton<AwsService>();
-
+    builder.Services.AddSingleton<QuestionService>();
+    builder.Services.AddSingleton<AnswerService>();
+    builder.Services.AddSingleton<CommentService>();
     builder.Services.AddSingleton<DatabaseSettings>(builder.Configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettings>());
     return builder;
   }
