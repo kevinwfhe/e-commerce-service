@@ -36,25 +36,39 @@ public class QuestionService
     _commentService = commentService;
   }
 
-  public async Task<Question> CreateAsync(Question newQuestion)
+  public async Task<IntermediateQuestion> CreateAsync(Question newQuestion)
   {
     // set the currentUser's id as the authorId of the question
     var currentUser = (User)_httpContextAccessor.HttpContext.Items["User"];
     newQuestion.authorId = ObjectId.Parse(currentUser.id);
     newQuestion.createTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
     await _questions.InsertOneAsync(newQuestion);
-    return newQuestion;
+    var res = new IntermediateQuestion(
+      question: newQuestion,
+      answerCount: newQuestion.answers.Count(),
+      commentCount: newQuestion.comments.Count(),
+      author: currentUser
+    );
+    return res;
   }
 
-  public async Task<List<IntermediateQuestion>> GetAsync()
+  public async Task<List<IntermediateQuestion>> GetAsync(string keyword)
   {
-    var question = await _questions.Find(_ => true).ToListAsync();
+    List<Question> question;
+    if (keyword != null)
+    {
+      question = await _questions.Find(q => q.title.Contains(keyword) || q.content.Contains(keyword)).ToListAsync();
+    }
+    else
+    {
+      question = await _questions.Find(_ => true).ToListAsync();
+    }
     IntermediateQuestion questionToImQuestion(Question q)
     {
       var author = _userService.GetById(q.authorId.ToString());
       return new IntermediateQuestion(q, q.answers.Count(), q.comments.Count(), author);
     }
-    var res = question.Select((q) => questionToImQuestion(q)).ToList();
+    var res = question.Select((q) => questionToImQuestion(q)).OrderByDescending(q => q.createTime).ToList();
     return res;
   }
 

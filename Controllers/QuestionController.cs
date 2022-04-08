@@ -17,9 +17,9 @@ public class QuestionController : ControllerBase
   }
 
   [HttpGet(Name = "GetQuestions")]
-  public async Task<List<IntermediateQuestion>> Get()
+  public async Task<List<IntermediateQuestion>> Get([FromQuery] string? keyword)
   {
-    return await _questionService.GetAsync();
+    return await _questionService.GetAsync(keyword);
   }
 
   [HttpGet("{id}", Name = "GetQuestionById")]

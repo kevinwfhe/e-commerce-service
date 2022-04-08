@@ -10,10 +10,7 @@ public class Product
   public string title { get; set; }
   public double price { get; set; }
   public string description { get; set; }
-  
-  [BsonRepresentation(BsonType.ObjectId)]
   public string? category { get; set; }
-
   public double? size { get; set; }
 
   public Product(
