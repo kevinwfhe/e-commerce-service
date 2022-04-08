@@ -208,6 +208,23 @@ public class OrderService
     return result;
   }
 
+  public async Task<string> SendOrderToEmail(string id)
+  {
+    string email;
+    Order order = await _orders.Find(o => o.id == id).FirstOrDefaultAsync();
+    if (order != null)
+    {
+      var user = await _users.Find(u => u.id == order.userId).FirstAsync();
+      email = user.emailAddress;
+      Console.WriteLine("Order sent to {0}", email);
+    }
+    else
+    {
+      return "user not found";
+    }
+    return email;
+  }
+
 
   /* -----------The following methods are for formatting the response ------------ */
   public List<Order> SortOrders(List<Order> orders, string sortIndex, string sortAsc)

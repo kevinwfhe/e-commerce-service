@@ -6,7 +6,7 @@ using csi5112group1project_service.Utils;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/")]
 public class OrderController : ControllerBase
 {
   private readonly ILogger<OrderController> _logger;
@@ -17,7 +17,7 @@ public class OrderController : ControllerBase
     _orderService = orderService;
   }
 
-  [HttpGet(Name = "GetOrders")]
+  [HttpGet("Order", Name = "GetOrders")]
   public async Task<PageInfo<List<Order>>> Get([FromQuery] string? keyword, [FromQuery] string? offset, [FromQuery] string? pageSize, [FromQuery] string? sortIndex, [FromQuery] string? sortAsc)
   {
     List<Order> orders;
@@ -29,7 +29,7 @@ public class OrderController : ControllerBase
     return pagedOrders;
   }
 
-  [HttpGet("{id}", Name = "GetOrderById")]
+  [HttpGet("Order/{id}", Name = "GetOrderById")]
   public async Task<ActionResult<DetailedOrder>> GetById(string id)
   {
     var detaileOrder = await _orderService.GetByIdAsync(id);
@@ -44,14 +44,14 @@ public class OrderController : ControllerBase
     return detaileOrder;
   }
 
-  [HttpPost]
+  [HttpPost("Order")]
   public async Task<ActionResult> Post([FromBody] Order newOrder)
   {
     Order orderCreated = await _orderService.CreateAsync(newOrder);
     return CreatedAtAction(nameof(Get), orderCreated);
   }
 
-  [HttpPut("{id}")]
+  [HttpPut("Order/{id}")]
   public async Task<ActionResult> Update(string id, [FromBody] Order updatedOrder)
   {
     var orderToUpdate = await _orderService.GetByIdAsync(id);
@@ -65,7 +65,7 @@ public class OrderController : ControllerBase
     return NoContent();
   }
 
-  [HttpDelete("{id}")]
+  [HttpDelete("Order/{id}")]
   public async Task<ActionResult> Delete(string id)
   {
     var orderToDelete = await _orderService.GetByIdAsync(id);
@@ -76,5 +76,16 @@ public class OrderController : ControllerBase
     }
     await _orderService.DeleteByIdAsync(id);
     return NoContent();
+  }
+
+  [HttpGet("SendOrder/{id}")]
+  public async Task<ActionResult> Email(string id)
+  {
+    var result = await _orderService.SendOrderToEmail(id);
+    if (result == "user not found")
+    {
+      return BadRequest("User not found");
+    }
+    return Ok(result);
   }
 }
